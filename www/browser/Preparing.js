@@ -170,12 +170,19 @@
 
     window.isFilePluginReadyRaised = function () { return eventWasThrown; };
 
-    window.initPersistentFileSystem(PERSISTENT_FS_QUOTA, function() {
-        console.log('Persistent fs quota granted');
-        quotaWasRequested = true;
-    }, function(e){
-        console.log('Error occured while trying to request Persistent fs quota: ' + JSON.stringify(e));
-    });
+    // 20170628 robert@fromont.net.nz:
+    // Check whether window.initPersistentFileSystem is already defined.
+    // If the app doesn't need a persistent file system it can predefine it:
+    //  window.initPersistentFileSystem = function(){};
+    // ...and then Chrome users aren't asked for permission for unnecessary storage.
+    if (!window.initPersistentFileSystem) {
+	window.initPersistentFileSystem(PERSISTENT_FS_QUOTA, function() {
+            console.log('Persistent fs quota granted');
+            quotaWasRequested = true;
+	}, function(e){
+            console.log('Error occured while trying to request Persistent fs quota: ' + JSON.stringify(e));
+	});
+    }
 
     channel.onCordovaReady.subscribe(function () {
         function dispatchEventIfReady() {
