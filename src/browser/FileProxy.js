@@ -710,7 +710,7 @@
 	   use getBlob instead of get blob_, so that behaviour can be different for iOS browser */
 	MyFile.getBlob = function(myFile) {
 	    if (!iOS) {
-		return this.blob_;
+		return myFile.blob_;
 	    } else {	    
 		return new Blob([myFile.byteArray], {type: 'application/octet-binary'});
 	    }
@@ -724,12 +724,12 @@
 	    myFile.lastModifiedDate = val.lastModifiedDate;
 	    if (!iOS) {
 		myFile.blob_ = val;
-		if (callback) callback(this);
+		if (callback) callback(myFile);
 	    } else {
 		var reader = new FileReader();
 		reader.onload = function() {
 		    myFile.byteArray = reader.result;
-		    if (callback) callback(this);
+		    if (callback) callback(myFile);
 		};
 		reader.readAsArrayBuffer(val);
 	    }
